@@ -1,16 +1,16 @@
 import express from 'express';
 import routes from './routes';
+import path from 'path';
 
 const app = express();
 
 //fazendo o express entender json
 app.use(express.json());
-
+//usando as rotas
 app.use(routes);
-// Criação de rota (recurso completo da requisição)
-// O /users é o recurso/entidade que estamos acessando
-// Usamos os query params para filtrar informações, geralmente opcionais.
-// Request body: parâmetros para criação e atualização de informações
+
+//rota para pegar as imagens
+app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')));
 
 
 app.listen(3333);
