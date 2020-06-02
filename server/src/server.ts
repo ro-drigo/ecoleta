@@ -1,9 +1,11 @@
 import express from 'express';
+import cors from 'cors';
 import routes from './routes';
 import path from 'path';
 
 const app = express();
-
+//usando cors (permitindo tudo pois estamos desenvolvendo)
+app.use(cors());
 //fazendo o express entender json
 app.use(express.json());
 //usando as rotas
