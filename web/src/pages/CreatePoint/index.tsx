@@ -5,6 +5,7 @@ import { FiArrowLeft } from 'react-icons/fi';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import api from '../../services/api';
 import axios from 'axios';
+import { LeafletMouseEvent } from 'leaflet';
 
 import logo from '../../assets/logo.svg';
 
@@ -33,6 +34,7 @@ const CreatePoint = () => {
     //salvar estados
     const [selectedUf, setSelectedUf] = useState('0');
     const [selectedCity, setSelectedCity] = useState('0');
+    const [SelectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
     //Vamos criar função para recarregar os itens da lista
     useEffect(() => {
         api.get('items').then(response => {
@@ -76,6 +78,12 @@ const CreatePoint = () => {
         setSelectedCity(city);
     };
     
+    function handleMapClick(event: LeafletMouseEvent){
+        setSelectedPosition([
+            event.latlng.lat,
+            event.latlng.lng,
+        ])
+    }
 
     return (
         <div id="page-create-point">
@@ -131,13 +139,13 @@ const CreatePoint = () => {
                         <span>Selecione o endereço no mapa</span>
                     </legend>
 
-                    <Map center={[-23.6136024, -46.7962413]} zoom={15}>
+                    <Map center={[-23.6136024, -46.7962413]} zoom={15} onClick={handleMapClick}>
                         <TileLayer 
                             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
 
-                        <Marker position={[-23.6136024, -46.7962413]}/>
+                        <Marker position={SelectedPosition}/>
                     </Map>
 
                     <div className="field-group">
@@ -152,9 +160,8 @@ const CreatePoint = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="city">Cidade</label>
-                            <select name="city" id="city" value={setSelectedCity} onChange={handleSelectCity}>
+                            <select name="city" id="city" value={selectedCity} onChange={handleSelectCity}>
                                 <option value="0">Selecione uma cidade</option>
-                                <option value="0">Selecione uma UF</option>
                                 {cities.map(city => (
                                     <option key={city} value={city}> {city} </option>
                                 ))}
